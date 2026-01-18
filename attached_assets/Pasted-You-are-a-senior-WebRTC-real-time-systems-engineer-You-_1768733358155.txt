@@ -1,0 +1,206 @@
+You are a senior WebRTC + real-time systems engineer.
+
+You must design and implement a REAL stranger voice & chat application
+using official WebRTC principles from https://webrtc.org/.
+
+This project must be FREE and SELF-HOSTED.
+Do NOT use Base44 or any proprietary BaaS.
+
+-----------------------------------------
+PROJECT GOAL
+-----------------------------------------
+
+Build a real-world stranger matching application where:
+
+1) A user clicks "Find Stranger"
+2) The user is placed into a real matchmaking queue
+3) Another REAL user is selected randomly
+4) Both users connect using WebRTC audio
+5) They can:
+   - Talk (voice)
+   - Chat (text)
+6) Either user can:
+   - Skip to next stranger
+   - End call
+   - Report abuse
+7) The system cleans up correctly and re-queues users
+
+NO fake users.
+NO simulations.
+NO frontend-only matching.
+
+-----------------------------------------
+PLATFORMS
+-----------------------------------------
+
+- Web (Browser WebRTC)
+- Android (Native WebRTC / libwebrtc)
+
+Both platforms MUST use the SAME signaling protocol.
+
+-----------------------------------------
+ABSOLUTE RULES
+-----------------------------------------
+
+DO NOT:
+- Assume localhost only
+- Use mock data
+- Use fake matchmaking
+- Use polling for signaling
+- Use demo-only examples
+- Use "User A / User B" placeholders
+
+If something REQUIRES real infrastructure:
+STATE IT CLEARLY.
+
+-----------------------------------------
+CORE FEATURES (MANDATORY)
+-----------------------------------------
+
+🎙️ Stranger-to-stranger audio calling  
+💬 Real-time text chat during calls  
+🔄 Server-authoritative random matchmaking  
+⏱️ Call duration timer  
+🔇 Mute / unmute microphone  
+🔊 Volume control  
+⏭️ Skip to next stranger instantly  
+🚨 Report system  
+📱 Mobile-friendly UI  
+
+-----------------------------------------
+WEBRTC REQUIREMENTS (STRICT)
+-----------------------------------------
+
+You MUST correctly implement:
+
+- RTCPeerConnection
+- ICE candidate gathering
+- STUN servers (mandatory)
+- TURN servers (required for reliability)
+- Offer / Answer exchange
+- Media stream lifecycle
+- Connection state monitoring
+- Disconnect & reconnection handling
+
+Explain clearly:
+- Why some connections fail without TURN
+- How NAT, mobile data, and VPNs affect WebRTC
+- Differences between browser WebRTC and Android WebRTC
+
+-----------------------------------------
+SYSTEM ARCHITECTURE (MANDATORY)
+-----------------------------------------
+
+1) Frontend (Web)
+   - React-based UI
+   - WebRTC audio
+   - WebSocket signaling
+   - Chat UI
+   - Call controls
+
+2) Android App
+   - Native WebRTC (libwebrtc)
+   - Same signaling messages as web
+   - Audio + chat support
+
+3) Signaling Server (FREE)
+   - Node.js
+   - WebSocket-based
+   - Handles:
+     - Matchmaking queue
+     - Offer / Answer exchange
+     - ICE candidate relay
+     - Chat messages
+     - Skip / disconnect
+     - Abuse reports
+
+4) Matchmaking Logic
+   - Server-authoritative
+   - Queue-based
+   - Random pairing
+   - Atomic pairing logic
+   - No frontend matching
+
+-----------------------------------------
+MATCHMAKING FLOW (REAL)
+-----------------------------------------
+
+1) Client connects to signaling server (WebSocket)
+2) Client sends "FIND_STRANGER"
+3) Server places client in queue
+4) When two clients are available:
+   - Server pairs them
+   - Server creates a session ID
+   - Server notifies both clients
+5) WebRTC offer/answer begins
+6) Audio + chat become active
+7) On skip or disconnect:
+   - Server cleans up session
+   - Remaining user is re-queued
+
+-----------------------------------------
+CHAT REQUIREMENTS
+-----------------------------------------
+
+- Real-time
+- WebSocket-based
+- Session-scoped
+- Works on Web + Android
+- System messages:
+  - "Connected"
+  - "Stranger left"
+- Disabled outside active calls
+
+-----------------------------------------
+SECURITY & ABUSE PREVENTION
+-----------------------------------------
+
+- Rate limiting
+- Report system
+- Auto-disconnect on repeated abuse
+- Anonymous usage (no signup)
+- No call recording
+
+-----------------------------------------
+INFRASTRUCTURE (FREE-FIRST)
+-----------------------------------------
+
+You must clearly explain and use:
+
+- WebSocket signaling server (self-hosted)
+- Public STUN servers (Google)
+- TURN server (Coturn – required for production)
+- HTTPS + WSS
+
+If TURN or HTTPS is required:
+STATE IT CLEARLY and explain why.
+
+-----------------------------------------
+DELIVERABLES REQUIRED
+-----------------------------------------
+
+1) Full architecture explanation
+2) WebRTC call flow (step-by-step)
+3) Signaling message formats (JSON)
+4) Server-side matchmaking logic
+5) Web frontend implementation
+6) Android WebRTC implementation
+7) Chat implementation
+8) TURN/STUN explanation
+9) Common failure cases & fixes
+10) Clear explanation of how two strangers actually connect
+
+-----------------------------------------
+IMPORTANT FINAL NOTE
+-----------------------------------------
+
+This is NOT a demo.
+This is NOT a tutorial.
+This is a REAL application blueprint.
+
+Do NOT simplify.
+Do NOT skip real-world problems.
+If something cannot work without real servers, say it clearly.
+
+OUTPUT:
+Structured, production-intent design and real code.
