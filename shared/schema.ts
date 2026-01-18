@@ -17,7 +17,7 @@ export const insertReportSchema = createInsertSchema(reports).pick({
 export type InsertReport = z.infer<typeof insertReportSchema>;
 export type Report = typeof reports.$inferSelect;
 
-// WebSocket Message Types
+// WebSocket Message Types - Production Protocol
 export const WS_MESSAGES = {
   JOIN: 'JOIN',           // Client -> Server: Join queue
   LEAVE: 'LEAVE',         // Client -> Server: Leave queue/call
@@ -25,7 +25,7 @@ export const WS_MESSAGES = {
   OFFER: 'OFFER',         // Peer -> Peer (relayed)
   ANSWER: 'ANSWER',       // Peer -> Peer (relayed)
   CANDIDATE: 'CANDIDATE', // Peer -> Peer (relayed)
-  CHAT: 'CHAT',           // Peer -> Peer (relayed via Server for persistence/safety if needed, or just relay)
+  CHAT: 'CHAT',           // Peer -> Peer (relayed)
   PEER_LEFT: 'PEER_LEFT', // Server -> Client: Peer disconnected
   ERROR: 'ERROR'          // Server -> Client: Something went wrong
 } as const;
