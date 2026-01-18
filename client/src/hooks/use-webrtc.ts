@@ -30,7 +30,10 @@ export function useWebRTC() {
 
   const connectWebSocket = useCallback(() => {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
+    // Use an environment variable for the signaling server URL if available, 
+    // otherwise fallback to the current host
+    const signalingServerUrl = import.meta.env.VITE_SIGNALING_SERVER_URL;
+    const wsUrl = signalingServerUrl || `${protocol}//${window.location.host}/ws`;
     
     ws.current = new WebSocket(wsUrl);
 
