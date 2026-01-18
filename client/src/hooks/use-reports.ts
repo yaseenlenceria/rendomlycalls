@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { api, type InsertReport } from "@shared/schema"; // Actually routes.ts exports schema imports, but direct import is safer
+import { api } from "@shared/routes";
+import { type InsertReport } from "@shared/schema";
 import { insertReportSchema } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 
