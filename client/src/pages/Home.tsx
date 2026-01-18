@@ -88,6 +88,32 @@ export default function Home() {
                 </motion.div>
               )}
 
+              {status === 'ERROR' && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  className="text-center space-y-6"
+                >
+                  <div className="space-y-2">
+                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
+                      Connection issue
+                    </h2>
+                    <p className="text-lg text-muted-foreground max-w-md mx-auto">
+                      We couldn't reach the signaling server. Please try again.
+                    </p>
+                  </div>
+
+                  <Button
+                    size="lg"
+                    onClick={findStranger}
+                    className="h-14 px-8 rounded-full text-lg font-semibold bg-white text-black hover:bg-white/90 shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                  >
+                    Try again
+                  </Button>
+                </motion.div>
+              )}
+
               {isSearching && (
                 <motion.div 
                   initial={{ opacity: 0 }}

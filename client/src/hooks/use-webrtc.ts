@@ -11,6 +11,7 @@ export function useWebRTC() {
   const [messages, setMessages] = useState<{ id: string; text: string; sender: 'me' | 'stranger' }[]>([]);
   
   const ws = useRef<WebSocket | null>(null);
+  const pendingJoin = useRef(false);
   const peerConnection = useRef<RTCPeerConnection | null>(null);
   const { toast } = useToast();
 
@@ -33,12 +34,30 @@ export function useWebRTC() {
     // Use an environment variable for the signaling server URL if available, 
     // otherwise fallback to the current host
     const signalingServerUrl = import.meta.env.VITE_SIGNALING_SERVER_URL;
+    if (!signalingServerUrl && import.meta.env.PROD) {
+      toast({
+        title: "Signaling server unavailable",
+        description: "Set VITE_SIGNALING_SERVER_URL to a WebSocket signaling server to connect.",
+        variant: "destructive"
+      });
+      setStatus('ERROR');
+      return;
+    }
     const wsUrl = signalingServerUrl || `${protocol}//${window.location.host}/ws`;
-    
+
+    if (ws.current && ws.current.readyState !== WebSocket.CLOSED) {
+      return;
+    }
+
     ws.current = new WebSocket(wsUrl);
 
     ws.current.onopen = () => {
       console.log('WS Connected');
+      if (pendingJoin.current) {
+        ws.current?.send(JSON.stringify({ type: WS_MESSAGES.JOIN }));
+        pendingJoin.current = false;
+        setStatus('SEARCHING');
+      }
     };
 
     ws.current.onmessage = async (event) => {
@@ -52,9 +71,27 @@ export function useWebRTC() {
 
     ws.current.onclose = () => {
       console.log('WS Closed');
-      // Simple reconnection logic could go here
+      if (status !== 'IDLE') {
+        setStatus('ERROR');
+        toast({
+          title: "Connection closed",
+          description: "Signaling server closed the connection. Please try again.",
+          variant: "destructive"
+        });
+      }
     };
-  }, []); // Dependencies will need to be managed carefully to avoid infinite loops
+
+    ws.current.onerror = () => {
+      if (status !== 'IDLE') {
+        setStatus('ERROR');
+      }
+      toast({
+        title: "Connection error",
+        description: "Unable to connect to the signaling server.",
+        variant: "destructive"
+      });
+    };
+  }, [status, toast]); // Dependencies will need to be managed carefully to avoid infinite loops
 
   // Initialize WebRTC Peer Connection
   const createPeerConnection = useCallback(() => {
@@ -157,14 +194,9 @@ export function useWebRTC() {
 
   const findStranger = () => {
     if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
+      pendingJoin.current = true;
       connectWebSocket();
-      // Wait for connection before sending JOIN - crude but effective for this scale
-      setTimeout(() => {
-        if (ws.current?.readyState === WebSocket.OPEN) {
-          ws.current.send(JSON.stringify({ type: WS_MESSAGES.JOIN }));
-          setStatus('SEARCHING');
-        }
-      }, 500);
+      setStatus('SEARCHING');
     } else {
       ws.current.send(JSON.stringify({ type: WS_MESSAGES.JOIN }));
       setStatus('SEARCHING');
